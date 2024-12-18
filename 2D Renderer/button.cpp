@@ -2,6 +2,7 @@
 #include <functional>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 struct SquareButton
 {
@@ -13,9 +14,14 @@ struct SquareButton
 	void updateRendering(sf::Font font)
 	{
 		buttonText.setFont(font);
-		buttonText.setCharacterSize(24);
+		buttonText.setCharacterSize(12);
 		buttonText.setFillColor(sf::Color::White);
-		buttonText.setString(this->butText);
+
+		std::stringstream ss;
+		ss << this->butText;
+
+		buttonText.setString(ss.str());
+		buttonText.setPosition(this->buttShape.getPosition());
 	}
 
 	SquareButton(std::string title, sf::Vector2f position, sf::Font font)
@@ -29,19 +35,20 @@ struct SquareButton
 
 		updateRendering(font);
 
-		buttonPressed = nullptr; // Initialize the callback to nullptr
+		this->buttonPressed = nullptr; // Initialize the callback to nullptr
 	}
 
 	void render(sf::RenderWindow& window)
 	{
 		window.draw(this->buttShape);
+		//window.draw(this->buttonText);
 	}
 
 	void press() // Add this method to call the callback
 	{
-		if (buttonPressed)
+		if (this->buttonPressed)
 		{
-			buttonPressed();
+			this->buttonPressed();
 		}
 	}
 };
