@@ -158,22 +158,28 @@ void Game::update() // game logic and functionality
 
 	if (this->nextPhysicsUpdate <= std::chrono::steady_clock().now())
 	{
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-		{
-			sf::Vector2i pixelPos = sf::Mouse::getPosition(*this->window);
-			sf::Vector2f posF = this->window->mapPixelToCoords(pixelPos);
-			this->physicsSystem.addVerletObject(posF);
-		}
+		sf::Vector2f mousePos = this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window));
+		float eqX = mousePos.x - this->physicsSystem.backgroundCircle.getPosition().x;
+		float eqY = mousePos.y - this->physicsSystem.backgroundCircle.getPosition().y;
+		float dist = (eqX * eqX) + (eqY * eqY);
+		float maxDist = this->physicsSystem.collider_radius * this->physicsSystem.collider_radius;
 
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+		if (dist <= maxDist)
 		{
-			sf::Vector2i pixelPos = sf::Mouse::getPosition(*this->window);
-			sf::Vector2f posF = this->window->mapPixelToCoords(pixelPos);
-			for (size_t i = 0; i < 10; i++)
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 			{
-				this->physicsSystem.addVerletObject(posF + sf::Vector2f(static_cast<float>(i*2), 0.f));
+				this->physicsSystem.addVerletObject(mousePos);
+			}
+
+			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+			{
+				for (size_t i = 0; i < 10; i++)
+				{
+					this->physicsSystem.addVerletObject(mousePos + sf::Vector2f(static_cast<float>(i*2), 0.f));
+				}
 			}
 		}
+
 
 		float dt = 1.f/30.f;
 

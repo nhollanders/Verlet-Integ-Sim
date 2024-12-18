@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 #include <functional>
 #include <string>
+#include <iostream>
 
 struct SquareButton
 {
@@ -21,9 +22,10 @@ struct SquareButton
 	{
 		butText = title;
 		buttShape.setPosition(position);
-		buttShape.setFillColor(sf::Color::Black);
+		buttShape.setFillColor(sf::Color(100, 100, 100, 255));
 		buttShape.setOutlineColor(sf::Color::White);
 		buttShape.setSize(sf::Vector2f(50.f, 50.f));
+		buttShape.setOutlineThickness(2.f);
 
 		updateRendering(font);
 
