@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+/.vs/2D Renderer/CopilotIndices/17.12.38.29086
+/Release
+/2D Renderer/Release
+/.vs/2D Renderer
