@@ -13,9 +13,9 @@ private:
 	bool buttonPressed = false;
 
 public:
-	SquareButton* AddButton(std::string title, sf::Vector2f position, sf::Font font)
+	SquareButton* AddButton(std::string title, sf::Vector2f position, sf::Font font, std::function<void()> function)
 	{
-		SquareButton newButton = SquareButton(title, position, font);
+		SquareButton newButton = SquareButton(title, position, font, function);
 		managedButtons.push_back(newButton);
 		return &newButton;
 	}

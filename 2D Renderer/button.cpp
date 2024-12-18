@@ -11,6 +11,11 @@ struct SquareButton
 	std::function<void()> buttonPressed; // Add this line to store the callback
 	sf::Text buttonText;
 
+    void setPressFunction(std::function<void()> function)
+    {
+        this->buttonPressed = function;
+    }
+
 	void updateRendering(sf::Font font)
 	{
 		buttonText.setFont(font);
@@ -24,8 +29,10 @@ struct SquareButton
 		buttonText.setPosition(this->buttShape.getPosition());
 	}
 
-	SquareButton(std::string title, sf::Vector2f position, sf::Font font)
+	SquareButton(std::string title, sf::Vector2f position, sf::Font font, std::function<void()> function)
 	{
+		this->setPressFunction(function);
+
 		butText = title;
 		buttShape.setPosition(position);
 		buttShape.setFillColor(sf::Color(100, 100, 100, 255));

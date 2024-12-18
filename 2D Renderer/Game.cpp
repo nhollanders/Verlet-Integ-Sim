@@ -21,11 +21,13 @@ void Game::initVariables()
 	this->nextPhysicsUpdate = std::chrono::steady_clock().now() + this->physicsUpdateInterval;
 	this->fps = "N/A";
 
-	SquareButton* newBut1 = this->butManager.AddButton("Test", sf::Vector2f(20.f, 80.f), this->font);
-	newBut1->buttonPressed = [newBut1]()
+	// TODO: Fix this broken button crap somehow
+	/*auto but1Func = [this]()
 	{
-		std::cout << "test press 1";
+		std::cout << "But 1 Pressed! \n";
 	};
+
+    SquareButton* newBut1 = this->butManager.AddButton("Test", sf::Vector2f(20.f, 80.f), this->font, but1Func);*/
 }
 void Game::initResources()
 {
