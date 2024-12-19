@@ -93,6 +93,7 @@ struct PhysSolver
 		return EuclideanDist2DSqrt(obj1.curPos, obj2.curPos) < (minDist * minDist);
 	}
 
+	// TODO: this needs to be more stable because rn is quite unstable compared to the last version
 	void solveCollision(VerletObject& obj1, VerletObject& obj2)
 	{
 		constexpr float eps = 0.0001f;
