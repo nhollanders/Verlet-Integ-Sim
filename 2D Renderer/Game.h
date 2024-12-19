@@ -22,8 +22,8 @@
 class Game
 {
 	private:
-		//// Private Functions & Variables ////
 
+	public:
 		/*
 		* Windows
 		*/
@@ -71,7 +71,8 @@ class Game
 		PhysSolver physicsSystem;
 		button_manager butManager;
 
-	public:
+		//// MAIN FUNCTIONS ////
+
 		// contstructors & deconstructors
 		Game();
 		~Game();

@@ -4,18 +4,20 @@
 #include <vector>
 #include <string>
 #include <iostream>
+#include <utility>
 #include "button.cpp"
 
 class button_manager
 {
 private:
 	std::vector<SquareButton> managedButtons; // all buttons to manage the updates of
+	std::vector<std::pair<SquareButton*, sf::Color>> pressedButtons; // buttons pressed that need their colors reset
 	bool buttonPressed = false;
 
 public:
-	SquareButton* AddButton(std::string title, sf::Vector2f position, sf::Font font, std::function<void()> function)
+	SquareButton* AddButton(std::string title, sf::Vector2f position, sf::Vector2f size, std::function<void(SquareButton* button)> function, sf::Font& font)
 	{
-		SquareButton newButton = SquareButton(title, position, font, function);
+		SquareButton newButton = SquareButton(title, position, size, function, font);
 		managedButtons.push_back(newButton);
 		return &newButton;
 	}
@@ -30,6 +32,8 @@ public:
 			{
 				if (obj.buttShape.getGlobalBounds().contains(mousePos)) // if the mouse clicked while inside the box
 				{
+					pressedButtons.push_back(std::make_pair(&obj, obj.buttShape.getFillColor()));
+					obj.buttShape.setFillColor(obj.buttShape.getFillColor() + sf::Color(50, 50, 50, 0));
 					obj.press();
 				}
 			}
@@ -38,6 +42,11 @@ public:
 		if (!sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) // not clicked
 		{
 			buttonPressed = false;
+
+			for (std::pair<SquareButton*, sf::Color> obj : pressedButtons)
+			{
+				obj.first->buttShape.setFillColor(obj.second);
+			}
 		}
 	}
 

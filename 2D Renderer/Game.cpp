@@ -21,20 +21,53 @@ void Game::initVariables()
 	this->nextPhysicsUpdate = std::chrono::steady_clock().now() + this->physicsUpdateInterval;
 	this->fps = "N/A";
 
-	// TODO: Fix this broken button crap somehow
-	/*auto but1Func = [this]()
-	{
-		std::cout << "But 1 Pressed! \n";
+	auto butt1Func = [this](SquareButton* button) {
+		this->physicsSystem.verletObjects.clear();
 	};
 
-    SquareButton* newBut1 = this->butManager.AddButton("Test", sf::Vector2f(20.f, 80.f), this->font, but1Func);*/
+    this->butManager.AddButton("Clear Balls", sf::Vector2f(5.f, 130.f), sf::Vector2f(100.f, 20.f), butt1Func, this->font);
+
+	// grav set left
+	auto gravLeft = [this](SquareButton* button) {
+		this->physicsSystem.gravity.x -= 100.f;
+	};
+
+	this->butManager.AddButton("L", sf::Vector2f(20.f, 500.f), sf::Vector2f(20.f, 20.f), gravLeft, this->font);
+
+	// grav set right
+	auto gravRight = [this](SquareButton* button) {
+		this->physicsSystem.gravity.x += 100.f;
+		};
+
+	this->butManager.AddButton(" R", sf::Vector2f(80.f, 500.f), sf::Vector2f(20.f, 20.f), gravRight, this->font);
+
+	// grav set upwards
+	auto gravUp = [this](SquareButton* button) {
+		this->physicsSystem.gravity.y -= 100.f;
+		};
+
+	this->butManager.AddButton(" U", sf::Vector2f(50.f, 470.f), sf::Vector2f(20.f, 20.f), gravUp, this->font);
+
+	// grav set downwards
+	auto gravDown = [this](SquareButton* button) {
+		this->physicsSystem.gravity.y += 100.f;
+		};
+
+	this->butManager.AddButton(" D", sf::Vector2f(50.f, 530.f), sf::Vector2f(20.f, 20.f), gravDown, this->font);
+
+	auto gravReset = [this](SquareButton* button) {
+		this->physicsSystem.gravity.x = 0.f;
+		this->physicsSystem.gravity.y = 1000.f;
+		};
+
+	this->butManager.AddButton(" O", sf::Vector2f(50.f, 500.f), sf::Vector2f(20.f, 20.f), gravReset, this->font);
 }
 void Game::initResources()
 {
 	bool noResourceLoadIssues = true;
 
 	noResourceLoadIssues = this->windowIcon.loadFromFile("Resources/Images/balls_icon.png");
-	noResourceLoadIssues = this->font.loadFromFile("Resources/Fonts/PolygonParty.ttf");
+	noResourceLoadIssues = this->font.loadFromFile("Resources/Fonts/pixelatedFont.ttf");
 
 	if (!noResourceLoadIssues)
 		std::cout << "Error loading resources!" << "\n";
@@ -42,7 +75,7 @@ void Game::initResources()
 void Game::initText()
 {
 	this->uiText.setFont(this->font);
-	this->uiText.setCharacterSize(24);
+	this->uiText.setCharacterSize(18);
 	this->uiText.setFillColor(sf::Color::White);
 	this->uiText.setString("N/A");
 }
@@ -193,7 +226,8 @@ void Game::update() // game logic and functionality
 	std::stringstream ss;
 
 	ss << " Balls: " << this->physicsSystem.verletObjects.size() << "\n"
-	   << " FPS: " << this->fps << "\n";
+		<< " FPS: " << this->fps << "\n"
+		<< " Grav:\n (" << this->physicsSystem.gravity.x << ", " << this->physicsSystem.gravity.y << ")\n";
 
 	this->uiText.setString(ss.str());
 }
