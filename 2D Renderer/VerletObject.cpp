@@ -9,15 +9,17 @@ using namespace std;
 
 struct VerletObject
 {
+	int objID;
+
 	sf::Vector2f curPos;
 	sf::Vector2f lastPos;
 	sf::Vector2f acceleration;
 
 	sf::CircleShape shape;
 
-	VerletObject(sf::Vector2f startPos, float rad)
+	VerletObject(sf::Vector2f startPos, float rad, int id)
 	{
-
+		objID = id;
 		shape.setFillColor(sf::Color(50,50,50,255));
 		shape.setRadius(rad);
 
@@ -48,5 +50,17 @@ struct VerletObject
 	void render(sf::RenderWindow* window)
 	{
 		window->draw(shape);
+	}
+
+	// signs
+
+	bool operator!=(const VerletObject& other) const
+	{
+		return this->objID != other.objID;
+	}
+
+	bool operator==(const VerletObject& other) const
+	{
+		return this->objID == other.objID;
 	}
 };

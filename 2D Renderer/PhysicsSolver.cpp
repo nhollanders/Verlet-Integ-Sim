@@ -18,7 +18,7 @@ struct PhysSolver
 
 	// object data
 	const int sub_steps = 8; // phys substeps
-	const float obj_radius = 5.f; // radius of the balls
+	const float obj_radius = 2.f; // radius of the balls
 	const float collider_radius = 300.f; // radius of the collider
 
 	PhysSolver()
@@ -35,7 +35,7 @@ struct PhysSolver
 
 	void addVerletObject(sf::Vector2f pos)
 	{
-		VerletObject newObject = VerletObject(pos, obj_radius);
+		VerletObject newObject = VerletObject(pos, obj_radius, verletObjects.size() + 1);
 		verletObjects.push_back(newObject);
 	}
 
@@ -46,7 +46,7 @@ struct PhysSolver
 		{
 			applyGravity();
 			applyConstraint();
-			solveCollisions();
+			findCollisions();
 			updatePositions(sub_dt);
 		}
 
@@ -76,38 +76,54 @@ struct PhysSolver
 		const float radius = this->backgroundCircle.getRadius();
 
 		for (auto& obj : this->verletObjects) {
+			const float objRad = obj.shape.getRadius();
 			const sf::Vector2f v = position - obj.curPos;
 			const float        dist = sqrt(v.x * v.x + v.y * v.y);
-			if (dist > (radius - obj_radius)) {
+			if (dist > (radius - objRad)) {
 				const sf::Vector2f n = v / dist;
-				obj.curPos = position - n * (radius - obj_radius);
+				obj.curPos = position - n * (radius - objRad);
 			}
 		}
 	}
 
-	void solveCollisions()
+	// determines if two objects are colliding or not
+	bool collides(VerletObject& obj1, VerletObject& obj2)
 	{
-		const float    response_coef = 0.75f;
-		const size_t objects_count = verletObjects.size();
-		// Iterate on all objects
-		for (size_t i{ 0 }; i < objects_count; ++i) {
-			VerletObject& object_1 = verletObjects[i];
-			// Iterate on object involved in new collision pairs
-			for (size_t k{ i + 1 }; k < objects_count; ++k) {
-				VerletObject& object_2 = verletObjects[k];
-				const sf::Vector2f v = object_1.curPos - object_2.curPos;
-				const float        dist2 = v.x * v.x + v.y * v.y;
-				const float        min_dist = obj_radius + obj_radius;
-				// Check overlapping
-				if (dist2 < min_dist * min_dist) {
-					const float        dist = sqrt(dist2);
-					const sf::Vector2f n = v / dist;
-					const float mass_ratio_1 = obj_radius / (obj_radius + obj_radius);
-					const float mass_ratio_2 = obj_radius / (obj_radius + obj_radius);
-					const float delta = 0.5f * response_coef * (dist - min_dist);
-					// Update positions
-					object_1.curPos -= n * (mass_ratio_2 * delta);
-					object_2.curPos += n * (mass_ratio_1 * delta);
+		float minDist = obj1.shape.getRadius() + obj2.shape.getRadius();
+		return EuclideanDist2DSqrt(obj1.curPos, obj2.curPos) < (minDist * minDist);
+	}
+
+	void solveCollision(VerletObject& obj1, VerletObject& obj2)
+	{
+		constexpr float eps = 0.0001f;
+		const float dist2 = EuclideanDist2DSqrt(obj1.curPos, obj2.curPos);
+		const float minDist = obj1.shape.getRadius() + obj2.shape.getRadius();
+		const float minDist2 = minDist * minDist; // Squared minimum distance
+
+		if (dist2 < minDist2 && dist2 > eps) {
+			const float dist = sqrt(dist2);
+			const float overlap = 0.5f * (minDist - dist);
+
+			// Normalize delta and displace the objects to resolve the collision
+			sf::Vector2f delta = obj1.curPos - obj2.curPos;
+			sf::Vector2f displacement = overlap * (delta / dist);
+			obj1.curPos += displacement;
+			obj2.curPos -= displacement;
+		}
+	}
+	
+	void findCollisions()
+	{
+		for (auto& obj_1 : verletObjects)
+		{
+			for (auto& obj_2 : verletObjects)
+			{
+				if (obj_1 != obj_2)
+				{
+					if (collides(obj_1, obj_2))
+					{
+						solveCollision(obj_1, obj_2);
+					}
 				}
 			}
 		}
