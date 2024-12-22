@@ -21,11 +21,12 @@ void Game::initVariables()
 	this->nextPhysicsUpdate = std::chrono::steady_clock().now() + this->physicsUpdateInterval;
 	this->fps = "N/A";
 
-	auto butt1Func = [this](SquareButton* button) {
+	auto clearBalls = [this](SquareButton* button) {
 		this->physicsSystem.verletObjects.clear();
+		this->physicsSystem.verletObjects.shrink_to_fit();
 	};
 
-    this->butManager.AddButton("Clear Balls", sf::Vector2f(5.f, 130.f), sf::Vector2f(100.f, 20.f), butt1Func, this->font);
+    this->butManager.AddButton("Clear Balls", sf::Vector2f(5.f, 130.f), sf::Vector2f(100.f, 20.f), clearBalls, this->font);
 
 	// grav set left
 	auto gravLeft = [this](SquareButton* button) {
@@ -81,8 +82,8 @@ void Game::initText()
 }
 void Game::initWindow()
 {
-	this->videoMode.height = 480;
 	this->videoMode.width = 640;
+	this->videoMode.height = 480;
 	this->window = new RenderWindow(VideoMode(800, 600), "Ball Simulator", Style::Titlebar | Style::Close | Style::Resize);
 	this->window->setIcon(this->windowIcon.getSize().x, this->windowIcon.getSize().y, this->windowIcon.getPixelsPtr());
 }

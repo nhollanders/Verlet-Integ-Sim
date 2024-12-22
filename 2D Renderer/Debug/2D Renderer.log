@@ -1,8 +1,2 @@
-﻿  button.cpp
-  Game.cpp
-  main.cpp
-  PhysicsSolver.cpp
-  VerletObject.cpp
-  Generating Code...
-E:\code\C++\Verlet-Integ-Sim\2D Renderer\button_manager.h(22,1): warning C4172: returning address of local variable or temporary : newButton
+﻿  Game.cpp
   2D Renderer.vcxproj -> E:\code\C++\Verlet-Integ-Sim\Debug\2D Renderer.exe
