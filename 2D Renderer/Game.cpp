@@ -22,6 +22,12 @@ void Game::initVariables()
 	this->fps = "N/A";
 
 	auto clearBalls = [this](SquareButton* button) {
+		for (VerletObjectPos* objPos : this->physicsSystem.verletObjects)
+		{
+			delete objPos->VObj;
+			delete objPos;
+		}
+
 		this->physicsSystem.verletObjects.clear();
 		this->physicsSystem.verletObjects.shrink_to_fit();
 	};
@@ -209,7 +215,7 @@ void Game::update() // game logic and functionality
 
 			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
 			{
-				for (size_t i = 0; i < 10; i++)
+				for (size_t i = 0; i < 100; i++)
 				{
 					this->physicsSystem.addVerletObject(mousePos + sf::Vector2f(static_cast<float>(i*2), 0.f));
 				}

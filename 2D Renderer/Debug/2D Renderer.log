@@ -1,2 +1,7 @@
-﻿  Game.cpp
+﻿  button.cpp
+  Game.cpp
+  main.cpp
+  PhysicsSolver.cpp
+  VerletObject.cpp
+  Generating Code...
   2D Renderer.vcxproj -> E:\code\C++\Verlet-Integ-Sim\Debug\2D Renderer.exe
