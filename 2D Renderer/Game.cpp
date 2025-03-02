@@ -21,15 +21,9 @@ void Game::initVariables()
 	this->nextPhysicsUpdate = std::chrono::steady_clock().now() + this->physicsUpdateInterval;
 	this->fps = "N/A";
 
+	// clear balls function
 	auto clearBalls = [this](SquareButton* button) {
-		for (VerletObjectPos* objPos : this->physicsSystem.verletObjects)
-		{
-			delete objPos->VObj;
-			delete objPos;
-		}
-
-		this->physicsSystem.verletObjects.clear();
-		this->physicsSystem.verletObjects.shrink_to_fit();
+		this->physicsSystem.clearVerletObjects();
 	};
 
     this->butManager.AddButton("Clear Balls", sf::Vector2f(5.f, 130.f), sf::Vector2f(100.f, 20.f), clearBalls, this->font);
@@ -200,6 +194,7 @@ void Game::update() // game logic and functionality
 
 	if (this->nextPhysicsUpdate <= std::chrono::steady_clock().now())
 	{
+		// all this code determines if mouse clicks and to add a ball to the enviroment if it does
 		sf::Vector2f mousePos = this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window));
 		float eqX = mousePos.x - this->physicsSystem.backgroundCircle.getPosition().x;
 		float eqY = mousePos.y - this->physicsSystem.backgroundCircle.getPosition().y;
@@ -232,7 +227,7 @@ void Game::update() // game logic and functionality
 
 	std::stringstream ss;
 
-	ss << " Balls: " << this->physicsSystem.verletObjects.size() << "\n"
+	ss << " Balls: " << this->physicsSystem.verletObjList.size() << "\n"
 		<< " FPS: " << this->fps << "\n"
 		<< " Grav:\n (" << this->physicsSystem.gravity.x << ", " << this->physicsSystem.gravity.y << ")\n";
 
